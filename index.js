@@ -1,26 +1,40 @@
 import schema from "./schema.json" with { type: "json" };
 
+const RANDM_ARRAY_MAX_LENGTH = 5;
+const MIN_INTEGER_VALUE = 1;
+const MAX_INTEGER_VALUE = 1000;
+
 const jsonParser = (schema) => {
+  function generateRandomLength() {
+    return Math.floor(Math.random() * RANDM_ARRAY_MAX_LENGTH) + 1;
+  }
+
   function generateRandomValue(schema, definitions) {
     if (!schema) return null;
+
+    function generateRandomString() {
+      return Math.random().toString(36).substring(7);
+    }
+    function generateRandomInteger(max) {
+      return Math.floor(Math.random() * max || MAX_INTEGER_VALUE)
+    }
   
     if (schema.type) {
       switch (schema.type) {
         case 'string':
           if (schema.pattern) {
-            return `https://${Math.random().toString(36).substring(7)}.corezoid.com/api/1/json/public/${Math.floor(Math.random() * 10000)}/${Math.random().toString(36).substring(7)}`;
+            return `https://${generateRandomString()}.corezoid.com/api/1/json/public/${generateRandomInteger()}/${generateRandomString()}`;
           }
-          return Math.random().toString(36).substring(7);
+          return generateRandomString();
         case 'integer':
-          const min = schema.minimum || 1;
-          const max = schema.maximum || 10000;
-          return Math.floor(Math.random() * (max - min + 1)) + min;
+          const min = schema.minimum || MIN_INTEGER_VALUE;
+          const max = schema.maximum || MAX_INTEGER_VALUE;
+          return generateRandomInteger(max - min + 1) + min;
         case 'boolean':
           return Math.random() < 0.5;
         case 'array':
           if (!schema.items) return [];
-          const arrayLength = Math.floor(Math.random() * 5) + 1; 
-          return Array.from({ length: arrayLength }, () => generateRandomValue(schema.items, definitions));
+          return Array.from({ length: generateRandomLength() }, () => generateRandomValue(schema.items, definitions));
         case 'object':
           return generateData(schema, definitions);
         case 'null':
@@ -29,10 +43,10 @@ const jsonParser = (schema) => {
           return null;
       }
     } else if (schema.enum) {
-      return schema.enum[Math.floor(Math.random() * schema.enum.length)]; //Random value from enum
+      return schema.enum[generateRandomInteger( schema.enum.length)];
     } else if (schema.anyOf) {
       //Choosing one of possible anyOf
-      const randomSchema = schema.anyOf[Math.floor(Math.random() * schema.anyOf.length)];
+      const randomSchema = schema.anyOf[generateRandomInteger(schema.anyOf.length)];
       return generateRandomValue(randomSchema, definitions); 
     }
   
@@ -46,8 +60,7 @@ const jsonParser = (schema) => {
       for (const [key, valueSchema] of Object.entries(schema.properties)) {
         if (valueSchema?.items?.hasOwnProperty('$ref')) {
           const ref = valueSchema.items['$ref'].replace('#', '');
-          const arrayLength = Math.floor(Math.random() * 5) + 1;
-          data[key] = Array.from({ length: arrayLength }, () => generateRandomValue(definitions[ref], definitions));
+          data[key] = Array.from({ length: generateRandomLength() }, () => generateRandomValue(definitions[ref], definitions));
         } else if (valueSchema) {
           data[key] = generateRandomValue(valueSchema, definitions);
         }
