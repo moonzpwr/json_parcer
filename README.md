@@ -1,4 +1,4 @@
-# json_parcer
+# json_parser
 It is necessary to create a function that accepts the specified JSON schema as an argument and returns the corresponding data object. Object field values ​​are randomly 
 generated based on the constraints described in the JSON schema. It is forbidden to use external libraries for implementation. 
 You also need to write unit tests for your function.
