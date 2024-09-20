@@ -1,0 +1,16 @@
+{
+  "name": "json_parser",
+  "version": "1.0.0",
+  "description": "It is necessary to create a function that accepts the specified JSON schema as an argument and returns the corresponding data object. Object field values ​​are randomly \r generated based on the constraints described in the JSON schema. It is forbidden to use external libraries for implementation. \r You also need to write unit tests for your function.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "jest": "^29.7.0"
+  }
+}
